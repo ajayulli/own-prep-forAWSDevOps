@@ -1,0 +1,92 @@
+Monolithic applications    ---->    If all the functionalities of a project exist in a single codebase, then that application is known as a monolithic application.
+
+We design our application in various layers like presentation, service, and persistence and then deploy that codebase as a single jar/war file. This is nothing but a monolithic application, where “mono” represents the single codebase containing all the required functionalities. 
+---------------------------------------------------------------------------------------------------
+Microservices ---->  It is an architectural development style in which the application is made up of smaller services that handle a small portion of the functionality and data by communicating with each other directly using lightweight protocols like HTTP.
+----------------------------------------------------------------------------------------------------
+What is DevOps, and why is it important?
+
+DevOps is a cultural and technical movement in the field of software development and IT operations that aims to improve collaboration, communication, and integration between development (Dev) and operations (Ops) teams. It seeks to break down the traditional silos between these two functions and create a more streamlined and efficient software development lifecycle.
+
+DevOps emphasizes automation, continuous integration and continuous deployment (CI/CD), and a shared responsibility for the entire application lifecycle, from code development to deployment and beyond.
+
+Here's why DevOps is important---->
+Faster Software Delivery
+Improved Collaboration:
+Enhanced Quality
+Reduced Risk
+Efficient Resource Utilization
+Innovation
+Feedback Loop
+Scalability:
+Flexibility
+--------------------------------------------------------------------------------------------------
+Image:
+
+An image is a lightweight, stand-alone, and executable package that includes everything needed to run a piece of software, including the code, runtime, libraries, and system tools.
+
+Docker images serve as a blueprint or template for creating containers. They are read-only, meaning that once an image is created, it cannot be modified. To make changes, you create a new image.
+--------------------------------------------------------------------------------------------------
+Container:
+
+A container is a running instance of a Docker image. It is a lightweight, isolated environment that encapsulates an application and its dependencies.
+
+Containers are launched from Docker images and are completely isolated from the host system and other containers. They have their own filesystem, network, and process space.
+
+Containers are runnable and executable. You can start, stop, pause, restart, and remove containers.
+
+INSTALL:
+yum install docker -y
+service start docker
+service status docker
+
+
+COMMANDS:
+docker images: to show a list of images
+docker pull ubuntu: to get ubuntu image
+docker run ubuntu: to create a container
+docker run -it --name cont2 ubuntu: it will create cont2 with interactive mode
+docker ps -a: to show list of containers
+docker commit c5589fa2f54a swiggy : to copy the image data into the other image.
+
+OS LEVEL OF VIRTUALIZATION:
+cat /etc/os-release
+apt update -y
+apt upgrade -y
+
+apt = package manager = advance pacakger tool
+
+touch file{1..5}
+apt install apache2 maven -y
+ctrl p q: to exit from container
+----------------------------------------------------------------------------------------------------------------
+DOCKER FILE:
+It is an automated way to create images.
+it will have components, which are in capital letters.
+in Dockerfile D must be capital.
+
+A Dockerfile is a text file used to define the configuration and instructions required to build a Docker image. Docker images are the building blocks of containers, and a Dockerfile contains a set of commands that specify how to create an image. 
+
+BASIC CODE OF DOCKERFILE------------>
+# Comment lines start with a "#" symbol
+
+# Use a base image as the starting point
+----------->FROM base-image:tag
+
+# Set the working directory inside the container
+----------->WORKDIR /app
+
+# Copy files from the host machine into the container
+----------->COPY ./source /app/destination
+
+# Install dependencies (e.g., using package managers)
+----------->RUN apt-get update && apt-get install -y package-name
+
+# Set environment variables
+----------->ENV KEY=value
+
+# Expose a port on which the container will listen
+----------->EXPOSE 80
+
+# Define a command to run when the container starts
+----------->CMD ["executable", "arg1", "arg2"]
