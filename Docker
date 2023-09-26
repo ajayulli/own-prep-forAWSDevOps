@@ -90,3 +90,123 @@ BASIC CODE OF DOCKERFILE------------>
 
 # Define a command to run when the container starts
 ----------->CMD ["executable", "arg1", "arg2"]
+
+Common Instructions:
+
+1.FROM: Specifies the base image from which to build the new image. All subsequent instructions are based on this image.
+
+2.WORKDIR: Sets the working directory for subsequent instructions. It's where commands like RUN, COPY, and CMD will be executed.
+
+3.COPY: Copies files and directories from the host machine into the image's filesystem.
+
+4.RUN: Executes commands within the image during the build process. These commands can install packages, configure settings, and perform various tasks.
+
+5.ENV: Sets environment variables within the image. These variables can be used by applications and scripts running in the container.
+
+6.EXPOSE: Specifies which ports the container will listen on when running. It doesn't actually publish the ports; that's done at runtime using the -p option.
+
+7.CMD: Defines the default command to run when a container is started from the image. There can only be one CMD instruction in a Dockerfile, but it can be overridden at runtime.
+
+8.ADD: copies the internet file to container (or) extract the files
+
+9.ENTRYPOINT: Similar to CMD, but allows you to configure a container's entry point as an executable. It's often used for containers running as applications.
+
+10.VOLUME: Creates a mount point with the specified name in the container. It's often used to persist data outside the container filesystem.
+----------------------------------------------------------------------------------------------------------------------
+DEPLOYMENT:
+
+Dockerfile
+FROM ubuntu
+RUN apt-get update -y
+RUN apt-get install apache2 -y
+COPY index.html /var/www/html/
+CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
+------------------------------------------------------------------------------------------------------------------
+
+DOCKER VOLUMES:-----> Creates a mount point with the specified name in the container. It's often used to persist data outside the container filesystem.
+
+1.When we create a Container then Volume will be created.
+2.Volume is simply a directory inside our container.
+3.First, we have to declare the directory Volume and then share Volume.
+4.Even if we stop the container still, we can access the volume.
+5.You can declare directory as a volume only while creating container.
+6.We can’t create volume from existing container.
+7.You can share one volume across many number of Containers.
+8.Volume will not be included when you update an image.
+9.If Container-1 volume is shared to Container-2 the changes made by Container-2 will be also available in the Container-1.
+----------------------------------------------------------------------------------------------------------------------DOCKER COMPOSE:
+
+It is a tool used to build, run and ship multiple containers for application.
+It is used to create multiple containers in a single host.
+It used the YAML file to manage multi containers as a single service.
+The Compose file provides a way to document and configure all of the application’s service dependencies (databases, queues, caches, web service APIs, etc). 
+
+COMPOSE/DOCKER COMPOSE FILE: (yml=yaml)
+We provide details about services.
+ex: image, port, volume ----
+
+INSTALLATION:
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+ls /usr/local/bin/
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose version
+
+WORKING:
+
+version: '3'
+services:
+  movies:
+    image: paymovies:v1
+    ports:
+      - "90:80"
+  train:
+    image: paytrain:v1
+    ports:
+      - "91:80"
+  dth:
+    image: paydth:v1
+    ports:
+      - "92:80"
+  recharge:
+    image: payrecharge:v1
+    ports:
+      - "93:80"
+-----------------------------------------------------------------------------------------------------------------
+Docker Swarm ------> 
+
+Docker swarm is an orchestration service within docker that allows us to manage and handle multiple containers at the same time.
+It is a group of servers that runs the docker application.
+It is used to manage the containers on multiple servers.
+This can be implemented by the cluster.
+The activities of the cluster are controlled by a swarm manager, and machines that have joined the cluster is called swarm worker.
+
+Docker Engine helps to create Docker Swarm.
+There are mainly worker nodes and manager nodes.
+The worker nodes are connected to the manager nodes.
+So any scaling or update needs to be done first it will go to the manager node.
+From the manager node, all the things will go to the worker node.
+Manager nodes are used to divide the work among the worker nodes. 
+Each worker node will work on an individual service for better performance.
+
+ 
+To create a service: docker service create —name devops —replicas 2 image_name
+
+Note: image should be present on all the servers
+
+To update the image service: docker service update —image image_name service_name
+
+Note: we can change image,
+
+To rollback the service: docker service rollback service_name
+
+To scale: docker service scale service_name=3
+
+To check the history: docker service logs
+
+To check the containers: docker service ps service_name
+
+To inspect: docker service inspect service_name
+
+To remove: docker service rm service_name
