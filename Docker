@@ -84,6 +84,32 @@ apt = package manager = advance pacakger tool
 touch file{1..5}
 apt install apache2 maven -y
 ctrl p q: to exit from container
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Virtualization is a technology that allows multiple virtual instances or environments to run on a single physical hardware system, often referred to as a host or host machine. These virtual instances are called virtual machines (VMs) or containers, and they behave as if they are independent and dedicated systems, even though they share underlying hardware resources.
+
+Virtualization provides several benefits, including:
+
+Resource Consolidation: By running multiple VMs on a single physical server, you can make more efficient use of your hardware resources, such as CPU, memory, storage, and network bandwidth. This consolidation can reduce hardware costs and improve resource utilization.
+
+Isolation: Virtualization provides strong isolation between VMs. Each VM runs in its own isolated environment, which means that software running in one VM cannot directly affect or interfere with software running in another VM. This isolation enhances security and stability.
+
+Server Consolidation: Virtualization is commonly used in data centers to consolidate multiple physical servers into a smaller number of physical machines. This reduces the physical footprint, power consumption, and cooling requirements.
+
+Flexibility and Scalability: Virtual machines can be easily provisioned, cloned, and scaled up or down as needed. This flexibility allows for rapid deployment of new services or applications and makes it easier to adjust resources to meet changing demands.
+
+Hardware Independence: VMs are not tied to specific physical hardware. This means you can migrate VMs between different physical servers without significant downtime, making maintenance and disaster recovery more manageable.
+
+Resource Management: Virtualization platforms often provide tools for resource management and allocation. You can allocate specific amounts of CPU, memory, and storage to each VM, ensuring that critical applications have the resources they need.
+
+There are two primary types of virtualization:
+
+Hardware Virtualization (Hypervisor-Based): In this approach, a hypervisor is a thin layer of software that runs directly on the physical hardware and manages the virtual machines. There are two types of hypervisors:
+
+Type 1 Hypervisor (Bare-Metal): This hypervisor runs directly on the hardware without the need for a host operating system. Examples include VMware vSphere/ESXi, Microsoft Hyper-V, and Xen.
+Type 2 Hypervisor (Hosted): This hypervisor runs on top of a host operating system and is often used for development and testing. Examples include VMware Workstation, Oracle VirtualBox, and Parallels Desktop.
+Container Virtualization: Containers provide a lightweight form of virtualization where applications and their dependencies are packaged together in a container image. These containers share the host operating system's kernel and run as isolated processes. Containerization platforms like Docker and Kubernetes have gained popularity for their efficiency and portability.
 ----------------------------------------------------------------------------------------------------------------
 DOCKER FILE:
 It is an automated way to create images.
