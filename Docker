@@ -3,6 +3,31 @@ Monolithic applications    ---->    If all the functionalities of a project exis
 We design our application in various layers like presentation, service, and persistence and then deploy that codebase as a single jar/war file. This is nothing but a monolithic application, where “mono” represents the single codebase containing all the required functionalities. 
 ---------------------------------------------------------------------------------------------------
 Microservices ---->  It is an architectural development style in which the application is made up of smaller services that handle a small portion of the functionality and data by communicating with each other directly using lightweight protocols like HTTP.
+---------------------------------------------------------------------------------------------------------------------------------
+
+Docker is a platform and toolset designed to simplify the creation, deployment, and management of applications using containerization technology. Containerization allows you to package an application and its dependencies together into a single unit called a "container." These containers are isolated environments that ensure an application runs consistently and reliably across different computing environments, whether it's a developer's laptop, a test server, or a production data center.
+
+Here are some key aspects and components of Docker:
+
+----------->   Containerization: Containers are lightweight, standalone, and executable packages that contain everything needed to run an application, including the code, runtime, system tools, libraries, and settings. Containers are based on a shared operating system kernel and are isolated from each other, making them highly efficient and portable.
+
+----------->   Docker Engine: Docker relies on the Docker Engine, which is the core component responsible for creating and running containers. The Docker Engine includes the Docker daemon, a REST API for interacting with Docker, and a command-line interface (CLI) for managing containers and images.
+
+----------->   Images: Docker images are read-only templates that define the contents and configuration of a container. Images are used as the basis for creating containers. They can be stored in registries (like Docker Hub) and shared among developers and environments.
+
+----------->   Dockerfile: To create a Docker image, you typically define its contents and configuration using a Dockerfile. A Dockerfile is a simple text file that specifies the base image, additional layers, and instructions for setting up the container environment.
+
+----------->   Docker Compose: Docker Compose is a tool for defining and running multi-container applications. It allows you to define a set of interconnected containers and their configurations in a single YAML file, making it easier to manage complex application stacks.
+
+----------->   Docker Swarm and Kubernetes: Docker Swarm and Kubernetes are orchestration tools that help you manage and scale containers in a production environment. They automate tasks like load balancing, scaling, and recovery, making it easier to deploy and maintain containerized applications at scale.
+
+----------->   Portability: Containers are highly portable, making it possible to move applications seamlessly between different environments, from development to testing to production. This consistency reduces "it works on my machine" issues and improves collaboration.
+
+----------->   Isolation: Containers provide a level of isolation that ensures applications don't interfere with each other. This isolation allows you to run multiple containers on a single host while maintaining security and performance.
+
+----------->   Resource Efficiency: Containers are more resource-efficient than traditional virtual machines (VMs) because they share the same operating system kernel. This leads to faster startup times and lower overhead.
+
+----------->   Security: Docker provides security features like namespace isolation, control groups (cgroups), and capabilities management to enhance the security of containerized applications. Additionally, Docker offers tools for scanning images for vulnerabilities.
 ----------------------------------------------------------------------------------------------------
 What is DevOps, and why is it important?
 
