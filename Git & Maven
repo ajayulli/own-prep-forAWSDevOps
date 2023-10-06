@@ -1,0 +1,415 @@
+WHAT IS GIT ----->  Global Information Tracker(GIT) is a distributed version control system (DVCS) that is widely used in software development to track changes in source code and manage collaborative coding projects. It was created by Linus Torvalds in 2005 and has since become one of the most popular and widely adopted version control systems.
+
+----->  Version Control: Git allows developers to track changes to their codebase over time. It records each modification made to a project's files, along with information about who made the change and when.
+
+----->  Branching and Merging: Git is known for its powerful branching and merging capabilities. Developers can create branches to work on specific features or bug fixes independently, and then merge those changes back into the main codebase when they are ready.
+
+----->  Collaboration: Git makes it easy for multiple developers to work on the same project simultaneously. It provides mechanisms for sharing code, resolving conflicts, and coordinating changes.
+
+----->  Repositories: Git repositories are collections of files and their complete history. Repositories can be hosted on remote servers (e.g., GitHub, GitLab) or stored locally on a developer's machine.
+
+----->  Commit: A commit in Git represents a snapshot of the project at a specific point in time. Each commit has a unique identifier (a hash) and a commit message that describes the changes made.
+
+----->  Pull Requests (PRs): In Git-based collaboration platforms like GitHub and GitLab, pull requests (or merge requests) provide a way for developers to propose changes to a project and request that they be reviewed and merged into the main codebase.
+
+-----------------------------------------------------------------------------------------------------------
+
+GIT:
+yum install git -y
+git init: to initialize .git repo (local repo)
+
+vim index.html (untracked)
+git status: show the stage of file
+git add index.html: to track index.html
+git commit -m "commit-1" index.html: to commit index.html
+git log: to show the commits 
+git log --oneline: to show logs on single line
+git log -2: shows recent 2 logs
+git log -5: shows recent 5 logs
+git show e6bde29: to show the files which is committed to it
+git show css1: to show which commit applied to file css1
+
+TO CONFIGURE USER & EMAIL:
+git config user.name "rahamshaik"
+git config user.email "rahamshaik@gmail.com"
+git log
+
+
+RESTORE: TRACK -- > UNTRACK
+
+touch file
+git status
+git add file1
+git status
+git restore --staged file1
+git status
+
+NOTE: It should not be committed.
+if you try to untrack the committed file we need to modify the file.
+
+--------------------------------------------------------------------------------------------------
+
+BRANCHES ------->  In Git, branches are a fundamental concept that allows you to work on different lines of development within a single Git repository. Branches make it possible to isolate and manage changes to your codebase, develop new features, fix bugs, and experiment with code without affecting the main or "master" branch.
+
+------->  Creating a Branch:  # Create a new branch
+git branch new-feature
+--------------------------------------------------------------------------------------------------
+------->  Switching Branches: # Switch to a branch
+git checkout new-feature
+--------------------------------------------------------------------------------------------------
+------->  Committing Changes: # Make changes and commit them
+git add .
+git commit -m "Implemented a new feature"
+--------------------------------------------------------------------------------------------------
+------->  Merging Branches:# Switch to the branch you want to merge into (e.g., master)
+git checkout master
+
+# Merge the feature branch into master
+git merge new-feature
+--------------------------------------------------------------------------------------------------
+------->  Branch Deletion:# Delete a branch
+git branch -d new-feature
+--------------------------------------------------------------------------------------------------
+------->  Remote Branches: # Fetch updates from a remote repository
+git fetch origin
+
+# Pull changes from a remote branch to the local branch
+git pull origin master
+
+# Push changes from a local branch to a remote branch
+git push origin new-feature
+--------------------------------------------------------------------------------------------------
+master & main branches are called as long living branches
+dev, qa, hotfix, release branches are called as short-living branches.
+
+git branch: to list the branches
+git branch movies: to create a branch called movies
+git checkout movies: to switch to branch called movies
+git checkout -b recharge: to create and switch at a time
+
+------------------------------------------------------------------------------------------------------
+
+MERGE ------->  In Git, merging is the process of combining changes from one branch into another branch. Merging is commonly used to integrate new features, bug fixes, or changes from one branch (usually a feature branch) into the main or target branch (often the master branch). 
+
+Here are the basic steps and concepts involved in merging:
+
+1.Start with a Clean Working Directory
+
+2.Select the Target Branch -----> # Switch to the target branch
+git checkout master
+
+3.Initiate the Merg -------> # Merge changes from a feature branch into the current branch (e.g., master)
+git merge feature-branch
+
+4.Resolve Conflicts
+
+5.Commit the Merge -------> # Commit the merge
+git commit -m "Merge feature-branch into master"
+
+6.Push the Changes -------->  # Push the changes to the remote repository
+git push origin master
+
+----------------------------------------------------------------------------------------------
+
+REBASE -------> In Git, rebasing is a powerful and advanced operation used to integrate changes from one branch into another while preserving a linear commit history. Unlike merging, which creates merge commits to track branch integration points, rebasing rewrites commit history.
+
+
+1.Start with a Clean Working Directory
+
+2.Select the Target Branch  ------>  # Switch to the target branch
+git checkout master
+
+3.Initiate the Rebase ------>  # Rebasing the current branch onto another branch (e.g., master)
+git rebase master
+
+4.Resolve Conflicts (if any):
+
+5.Complete the Rebase  -------->  # Continue the rebase after resolving conflicts
+git rebase --continue
+
+6.Push the Changes  --------->  # Push the rebased changes to the remote repository (use with caution)
+git push origin feature-branch --force
+
+-------------------------------------------------------------------------------------------
+
+PULL and PUSH    -------->     In Git, "pull" and "push" are two fundamental operations used to synchronize changes between your local Git repository and a remote Git repository, such as one hosted on a service like GitHub, GitLab, or Bitbucket.
+
+---------->   Pull:
+
+***Purpose: Pulling updates changes from a remote repository into your local repository.
+
+***Use Case: You typically use git pull when you want to retrieve the latest changes made by other contributors in the remote repository and incorporate them into your local branch.
+
+***Command: To pull changes from a remote repository, you use the git pull command followed by the name of the remote repository (often called "origin") and the branch name you want to pull.
+
+# Pull changes from the remote repository (e.g., master branch)
+git pull origin master
+
+***Operation: The git pull command performs two actions: it fetches the latest changes from the remote repository and then automatically merges them into your current local branch. This combination of fetch and merge is sometimes referred to as a "fast-forward" merge.
+
+----------->   Push:
+
+***Purpose: Pushing your local changes to a remote repository.
+
+***Use Case: You typically use git push when you've made changes to your local branch and want to share those changes with others by updating the remote repository.
+
+***Command: To push your local changes to a remote repository, you use the git push command followed by the name of the remote repository (e.g., "origin") and the name of the branch you want to push.
+
+
+# Push changes to the remote repository (e.g., feature-branch)
+git push origin feature-branch
+
+***Operation: The git push command sends your local commits to the remote repository, updating the branch with your changes. Other collaborators can then pull these changes into their local repositories.
+
+Key considerations for pulling and pushing:
+
+1.Branch Synchronization: Pulling and pushing help keep your local and remote branches in sync. When you pull, you bring changes from the remote repository to your local branch. When you push, you send changes from your local branch to the remote repository.
+
+2.Collaboration: Pulling and pushing are crucial for collaborating with others on a shared codebase. They allow multiple contributors to work on the same project, share their changes, and keep the project up to date.
+
+3.Branch Naming: Be aware of the branch names when pulling and pushing. The branch names in your local repository should match the branch names in the remote repository to ensure proper synchronization.
+
+4.Authentication: You may need to authenticate when pushing to a remote repository, especially if it's hosted on a service like GitHub. Git may prompt you for your username and password or ask you to set up SSH keys for secure authentication.
+
+5.Pull Conflicts: When pulling, if there are conflicting changes between your local branch and the remote branch, Git will pause the pull operation and ask you to resolve the conflicts manually.
+
+6.Force Pushing: Be cautious when force pushing (git push --force). This overwrites the remote branch with your local branch, potentially erasing others' work. Only use force push when you are sure it won't disrupt collaboration.
+
+---------------------------------------------------------------------------------------------------
+
+REVERT  ---------> git revert is a useful command when you need to undo changes in a Git repository while preserving the commit history and avoiding disruptions to collaboration.
+
+git log
+git revert <commit-hash>
+git revert abc123
+git push origin <branch-name> (optinal).
+
+---------------------------------------------------------------------------------------------
+CHERRY-PICK ----------->  In Git, "cherry-pick" is a command used to select and apply specific commits from one branch to another. It allows you to choose individual commits and apply them to your current branch, rather than merging or rebasing entire branches.
+
+Execute the Cherry-PicK --------> git cherry-pick <commit-hash>
+                                  git cherry-pick abc123
+
+---------------------------------------------------------------------------------------------------
+STASH  ------------>   In Git, the "stash" command is used to temporarily save changes in your working directory that you do not want to commit immediately. Stashing is helpful when you are in the middle of working on one task but need to switch to another task or branch without committing incomplete changes.
+
+1.Stash Your Changes  --------->   git stash
+
+2.Switch Branches or Perform Other Tasks -------->   git checkout another-branch
+
+3.Apply the Stash --------->   git stash apply
+If you have multiple stashes or want to apply a specific stash, you can specify the stash by its name or index. For example:  # Apply the first stash
+git stash apply stash@{0}
+
+4.Remove the Stash (Optional) -------->   git stash drop
+
+5.Clear All Stashes (Optional)   ------------>  git stash clear
+
+6.git stash list	: it shows the list of stashes
+
+7.git stash pop	: remove last stash
+
+8.git stash apply	: it will show the hidede file
+--------------------------------------------------------------------------------------------------
+
+MERGE CONFILICT  ------------->   A merge conflict in Git occurs when Git cannot automatically resolve differences between two branches being merged. This happens when both branches have made changes to the same part of a file or when the changes in one branch conflict with the changes in the other branch. When a merge conflict occurs, Git will stop the merging process and ask for manual intervention to resolve the conflict. 
+
+Here's how to handle a merge conflict in Git:
+
+1.Identify the Conflict -------->   When you attempt to merge two branches, and Git encounters a conflict, it will notify you with a message indicating the conflict. You can also identify conflicts by looking at the affected files. Git will add conflict markers (<<<<<<<, =======, >>>>>>>) to the conflicting sections of the file.
+
+
+2.Open the Conflict File ------------>   Use a text editor to open the file(s) with conflicts. Inside the file, you will see the conflicting sections marked with conflict markers. It will look something like this:
+
+<<<<<<< HEAD
+This is the current branch's content.
+=======
+This is the content from the branch you are merging.
+>>>>>>> branch-name
+
+The content between <<<<<<< HEAD and ======= represents the changes in your current branch, while the content between ======= and >>>>>>> branch-name represents the changes in the branch you are merging.
+
+
+
+3.Resolve the Conflict ---------->  Manually edit the file to resolve the conflict. Decide which changes to keep and which to discard, or make further modifications as needed to combine the changes in a way that makes sense for your project.
+
+4.Remove Conflict Markers  -----------> After resolving the conflict, remove the conflict markers (<<<<<<<, =======, >>>>>>>) and any unnecessary spacing. Git uses these markers to identify the conflict, so they should not remain in the file.
+
+
+5.Save the File  ------------>   Save the file with the conflict resolution changes.
+
+
+6.Stage the Resolved File  ------->  After resolving the conflict, stage the resolved file using the git add command.
+git add <resolved-file>
+
+7.Complete the Merge --------->  Once you have resolved all the conflicts in the files, you can complete the merge by running git commit. Git will automatically generate a merge commit message, which you can edit if needed.
+git commit
+
+-------------------------------------------------------------------------------------------------
+
+FORK  --------------->  Forking a repository is the process of creating a personal copy of someone else's Git repository on a Git hosting platform like GitHub, GitLab, or Bitbucket. This copy exists in your own account and can be freely modified without affecting the original repository.
+
+CLONE   --------------->  Cloning a repository is the process of creating a local copy of a Git repository on your computer. This local copy allows you to work with the repository's files, make changes, and interact with Git commands.
+
+***git clone <repository-url> [OR] git clone https://github.com/username/repository-name.git
+
+--------------------------------------------------------------------------------------------------
+
+Branching strategies  ------------> It is  also known as Git branching models or workflows, define how branches are organized and used within a software development project. These strategies provide guidelines for creating, managing, and merging branches to streamline development, improve collaboration, and maintain code quality. 
+
+1.Feature Branch Workflow -------->  
+Use Case: Suitable for smaller teams or projects. Each new feature or task gets its own branch.
+***Workflow:
+Create a feature branch from the main development branch (e.g., master or main).
+Develop and test the feature in the feature branch.
+Once the feature is complete, merge it back into the main development branch.
+Delete the feature branch.
+
+
+2.Gitflow Workflow  ----------> 
+Use Case: Suitable for larger projects with frequent releases. Distinguishes between feature development, release preparation, and hotfixes.
+***Workflow:
+master or main branch represents the production-ready code.
+develop branch serves as the main development branch.
+Feature branches are created for new features and merged into develop.
+Release branches are created from develop when preparing for a release. After testing, they are merged into both master and develop.
+Hotfix branches are created from master or main to fix critical issues. After testing, they are merged into both master and develop.
+
+
+3.GitHub Flow  ----------->
+Use Case: Streamlined workflow suitable for continuous delivery. Ideal for projects with frequent releases.
+***Workflow:
+Create a branch for a new feature or bug fix.
+Develop and test the code in the branch.
+Open a pull request (PR) to merge the branch into the main branch (or any other protected branch).
+Collaborators review and approve the PR.
+Once approved, the branch is merged into main, and the changes are deployed.
+
+
+4.Bitbucket Flow -------->
+Use Case: Simplified workflow suitable for smaller teams and projects. Focuses on feature development and continuous integration.
+***Workflow:
+Create a branch for a new feature or bug fix.
+Develop and test the code in the branch.
+Open a pull request (PR) to merge the branch into the master or main branch.
+Collaborators review and approve the PR.
+Once approved, the branch is merged into master or main, and changes are deployed.
+
+5.Trunk-Based Development   ----------->   
+Use Case: Extreme form of continuous integration. All development happens in a single branch (usually master or main).
+***Workflow:
+Developers work directly in the main branch.
+Code changes are continuously integrated, tested, and deployed.
+Short-lived feature flags or toggles are used to hide incomplete features until they are ready.
+The choice of branching strategy depends on project size, team size, release frequency, and collaboration preferences. Hybrid approaches or custom workflows may also be used to suit specific project needs. It's important to document and communicate the chosen branching strategy to ensure consistency and efficiency in your development process.
+
+--------------------------------------------------------------------------------------------------
+
+FETCH ------------>  In Git, "fetch" is a command that retrieves changes from a remote repository and updates the corresponding remote-tracking branches in your local repository. It allows you to see what changes have been made in the remote repository without actually merging those changes into your working branch
+
+
+Here's how the git fetch command works:
+
+1.Retrieve Remote Changes: When you run git fetch, Git contacts the remote repository specified (usually the "origin" by default) and fetches any new commits, branches, or tags that have been added to the remote repository since your last fetch or clone.
+
+2.Update Remote-Tracking Branches: Git stores a copy of the remote branches in your local repository as remote-tracking branches. For example, if you fetch changes from the "origin" repository, Git updates your local "origin/master" or "origin/main" branch (depending on the default branch name).
+
+3.Local Inspection: After the fetch, you can inspect the fetched changes using various Git commands, such as git log to view commit history, or git diff to see the differences between your local branch and the remote-tracking branch.
+
+4.Merge or Rebase: Once you've inspected the changes and are satisfied with them, you can merge or rebase your local branch with the corresponding remote-tracking branch. This brings the remote changes into your local branch and updates your working directory.
+
+         To merge, you can use git merge followed by the name of the remote-tracking branch, e.g., git merge origin/main.
+
+         To rebase, you can use git rebase followed by the name of the remote-tracking branch, e.g., git rebase origin/main.
+
+
+
+======================================================================================================================================================================================================
+
+<<<<<<<<<<<<<<<<<     MAVEN      >>>>>>>>>>>>>>>>>>>>>
+
+INSTALL:
+
+wget https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz
+tar -zxvf apache-maven-3.8.8-bin.tar.gz
+cd apache-maven-3.8.8-bin.tar.gz
+
+yum install java-1.8.0-openjdk -y
+java -version
+yum install maven -y
+mvn --version
+yum install tree -y
+
+WORKING WITH PROJECT:
+mvn archetype:generate	: To generate the project structure
+
+Define value for property 'groupId': raham
+Define value for property 'artifactId': swiggy
+Define value for property 'version' 1.0-SNAPSHOT: :
+Define value for property 'package' raham: : devops
+
+mvn compile: to compile the code (.java=.class)
+mvn test: to test the code (Apptest.java=Apptest.class)
+mvn package: to generate jar file on the project folder
+mvn install: to generate jar file on the maven folder
+mvn clean: to clear the source code
+
+mvn clean package: to will do the above actions
+
+
+----------------------------------------------------------------------------------------------
+
+Maven is a popular build automation and project management tool used primarily for Java projects, although it can also be used for projects in other programming languages. It simplifies and standardizes the build process, including tasks like compiling code, managing dependencies, running tests, packaging artifacts, and more
+
+1.Build Automation: Maven automates the build process, which involves transforming source code into executable artifacts (e.g., JAR or WAR files). Developers define build goals and tasks in a project configuration file, and Maven handles the execution of these tasks.
+
+2.Dependency Management: Maven manages project dependencies by allowing developers to specify dependencies in a central configuration file (typically named pom.xml). It can download and resolve dependencies from remote repositories, making it easy to include libraries and frameworks in your project.
+
+3.Project Lifecycle: Maven defines a standard project lifecycle with phases such as compile, test, package, install, and deploy. Developers can execute these phases to perform specific tasks. For example, running mvn compile compiles the source code.
+
+4.Plugin System: Maven uses a plugin system to extend its functionality. A variety of plugins are available to support different tasks, such as compiling code, running tests, generating documentation, and deploying artifacts. Plugins are configured in the pom.xml file.
+
+5.Standard Directory Structure: Maven enforces a standard directory structure for projects, making it easier to understand and work with different projects. For example, source code is typically stored in the src/main/java directory, while test code is placed in the src/test/java directory.
+
+--------------------------------------------------------------------------------------------------
+
+ 1.What is the main configuration file in Maven, and what does it contain?
+
+Answer: The main configuration file in Maven is the pom.xml (Project Object Model) file. It contains project metadata, dependencies, plugins, build instructions, and other project-specific configurations.
+
+2.Explain the Maven build lifecycle and its phases.
+
+Answer: The Maven build lifecycle consists of a series of phases, each representing a specific stage in the build process. Common phases include clean, validate, compile, test, package, install, and deploy. You can execute these phases using the mvn command.
+
+
+3. How do you run unit tests in a Maven project?
+
+Answer: Maven's test phase is responsible for running unit tests. You can execute it using the mvn test command. Unit tests are typically located in the src/test/java directory and should follow naming conventions, such as Test or TestCase.
+
+
+4. Explain the purpose of the settings.xml file in Maven.
+
+Answer: The settings.xml file is Maven's settings file, used to configure global settings for Maven. It can specify repository locations, proxy settings, and other global configurations. It is usually located in the conf directory of your Maven installation.
+
+5. How can you create a new Maven project using a specific archetype?
+ **Answer:** You can create a new Maven project based on a specific archetype using the `mvn archetype:generate` command. You provide the archetype's group ID and artifact ID as parameters and follow the prompts to configure the project.
+
+
+---------------------------------------------------------------------------------------------------
+
+GIT 
+
+1.Explain the difference between Git and other version control systems like SVN.
+
+Answer: Git is a distributed version control system, whereas SVN (Subversion) is a centralized version control system. In Git, each developer has a local copy of the entire repository, allowing them to work offline and commit changes independently. SVN relies on a central server for version control, which may introduce dependencies and require network access.
+
+2.How do you create a new Git repository?
+git init           # Initialize a new Git repository
+git add .          # Add all files to the staging area
+git commit -m "Initial commit"  # Commit the changes
+
+
+3.What is the difference between a Git pull and a Git fetch?
+
+ A Git pull is used to fetch changes from a remote repository and automatically merge them into the current branch. In contrast, a Git fetch is used to retrieve changes from a remote repository but does not perform an automatic merge. It updates the remote-tracking branches, allowing you to inspect changes before merging.
+
