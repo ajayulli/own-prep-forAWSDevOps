@@ -1,0 +1,450 @@
+KUBERNETES(K8S)  ------->   Kubernetes (often abbreviated as K8s) is an open-source container orchestration platform(cop) for automating the deployment, scaling, and management of containerized applications. It was originally developed by Google and is now maintained by the Cloud Native Computing Foundation (CNCF). Kubernetes provides a powerful framework for managing containers and containerized applications at scale, making it a key technology in modern cloud-native and microservices architectures.
+
+Here are some key features and concepts associated with Kubernetes:
+
+1.Container Orchestration: Containers are lightweight, portable, and consistent environments that encapsulate an application and its dependencies.
+
+2.Cluster Management: Kubernetes manages a cluster of nodes (servers or virtual machines) where containers are run. It handles node failures, scaling applications up or down, and distributing container workloads across nodes.
+
+3.Pods: The smallest deployable units in Kubernetes are called pods. A pod is a group of one or more containers that share the same network and storage resources. Containers within the same pod can communicate with each other using localhost.
+
+4.Services: Kubernetes services define a stable network endpoint (IP and port) for accessing a set of pods. Services allow for load balancing, service discovery, and routing network traffic to the appropriate pods.
+
+5.Replica Sets and Deployments: Kubernetes provides controllers like Replica Sets and Deployments to manage the desired number of replicas (copies) of a pod running in the cluster. They ensure that the desired state of the application is maintained.
+
+7.Namespaces: Namespaces provide a way to logically partition a Kubernetes cluster. They allow multiple teams or projects to share the same cluster while maintaining isolation and resource allocation.
+
+8.Horizontal and Vertical Scaling: Kubernetes can automatically scale applications horizontally (adding more instances) or vertically (resizing resources like CPU and memory) based on specified criteria or metrics.
+
+9.Rolling Updates and Rollbacks: Kubernetes supports rolling updates and rollbacks of application versions, ensuring minimal downtime during updates. This is achieved through strategies like Blue-Green deployments and Canary releases.
+
+10.Ingress Controllers: Ingress controllers enable routing external HTTP and HTTPS traffic to services within the cluster. They provide features like URL-based routing and SSL termination.
+
+----------------------------------------------------------------------------------------------------
+
+vim minikunbe.sh
+
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install curl wget apt-transport-https -y
+sudo curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo mv minikube-linux-amd64 /usr/local/bin/minikube
+sudo chmod +x /usr/local/bin/minikube
+sudo minikube version
+sudo curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+sudo echo "$(cat kubectl.sha256) kubectl" | sha256sum --check
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+sudo minikube start --driver=docker --force
+
+imperative method: we use commands to create pod
+kubectl run pod1 --image nginx
+kubectl: clt
+run: create 
+pod1: pod name
+nginx: image
+
+kubectl get pods
+kubectl get pod
+kubect1 get po
+kubect1 get po -o wide
+kubectl describe pod pod1 
+
+Declarivte method: we use file (manifest) to create pod
+manifest file is on yaml format.
+
+vim pod.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod3
+spec:
+  containers:
+    - name: cont1
+      image: rahamshaik/moviesrepopaytm:latest
+
+kubectl create -f pod.yml
+kubectl delete pod pod3
+
+
+DRAWBACKS:
+1. if a pod is delete we cant get back.
+
+---------------------------------------------------------------------------------------------------
+
+KUBERNETES ARCHITECTURE ---------------> Kubernetes (K8s) has a complex and distributed architecture designed to manage containerized applications across a cluster of machines. Here is an overview of its architecture components:
+
+--------->   1. Master Node:
+
+
+--------->****    API Server: The API server is the entry point for managing the Kubernetes cluster. It exposes the Kubernetes API, which is used by administrators and developers to interact with the cluster.
+
+--------->****    etcd: etcd is a distributed key-value store used for storing all cluster data, including configuration details and the current state of the cluster. It provides a reliable and consistent way to store and manage cluster information.
+
+--------->****   Controller Manager: This component manages various controllers that regulate the state of the system. Controllers ensure that the desired state of objects in the cluster matches the actual state.
+
+--------->****    Scheduler: The scheduler assigns work to nodes based on resource requirements and constraints. It decides which node to run a new pod on, optimizing resource utilization.
+
+
+--------->    2.Node (Worker) Nodes:
+
+--------->****   Kubelet: Kubelet is responsible for maintaining communication between the control plane (master) and the nodes (workers). It ensures that containers in pods are running and healthy.
+
+--------->****    Kube Proxy: Kube Proxy maintains network rules on nodes. It manages network routing and load balancing for services.
+
+
+
+--------->    3.Pod:
+
+A pod is the smallest deployable unit in Kubernetes. It represents a single instance of a running process in the cluster. Pods can contain one or more containers that share the same network and storage resources.
+
+-------------------------------------------------------------------------------------------------
+
+REPLICA-SET    --------->    A Replica Set is a Kubernetes controller that ensures a specified number of replica pods are running at all times. It's used to maintain the desired level of availability and redundancy for a particular application or microservice in a Kubernetes cluster. 
+
+
+######Replica Sets are a fundamental building block for ensuring high availability in Kubernetes.
+
+
+ --------->  1.Replica Count: Replica Sets are defined with a specific desired replica count, which represents how many identical pod replicas should be running. If the actual number of replicas deviates from this count, the Replica Set controller takes corrective actions to reconcile the difference.
+
+ --------->  2.Selectors: Replica Sets use label selectors to identify the pods they are responsible for managing. Pods managed by a Replica Set must have labels that match the selector criteria specified in the Replica Set configuration.
+
+ --------->  3.Pod Template: Replica Sets define a pod template, which serves as a blueprint for creating new pods when scaling up. The template specifies the container image(s), resource requirements, labels, and other settings for the pods.
+
+ --------->  4.Scaling: Replica Sets can be scaled horizontally, meaning you can increase or decrease the number of replica pods by changing the desired replica count in the configuration. Kubernetes will automatically create or delete pods to meet the desired count.
+
+-----------------------------------------------------------------------------------------------
+
+DEPLOYMENT   ----------->     In Kubernetes, a Deployment is a high-level resource that provides declarative updates to applications. It allows you to describe an application's lifecycle, including which container images to use, the number of replica pods, and how to handle updates and rollbacks.
+
+######Deployments are a key component for managing applications in a Kubernetes cluster. 
+
+Here are the key features and concepts associated with Deployments:
+
+ --------->  1.Declarative Configuration: Deployments are defined using a declarative configuration file (usually written in YAML). This file specifies the desired state of the application, including the container image, replica count, labels, and more.
+
+ --------->  2.Replica Pods: Deployments manage a set of replica pods, each running the same application. The desired replica count can be specified in the deployment configuration.
+
+ --------->  3.Rolling Updates: Deployments support rolling updates, which allow you to change the configuration of an application (e.g., update the container image) without causing downtime. During a rolling update, new pods with the updated configuration are gradually created, and old pods are terminated.
+
+ --------->  4.Rollbacks: If an update results in issues or errors, Deployments allow you to easily roll back to the previous version by specifying the desired revision.
+
+ --------->  5.Scaling: Deployments can be used to scale applications horizontally by increasing or decreasing the replica count. Scaling can be automated based on metrics or manually adjusted.
+
+ --------->  6.Pod Templates: Deployments use pod templates to define the pod specification for the application. This includes container image, resource requirements, labels, and annotations.
+
+ --------->  7.Labels and Selectors: Deployments use labels to identify and group pods. Selectors are used to ensure that only pods with specific labels are managed by the Deployment.
+
+
+------------------------------------------------------------------------------------------------
+
+RS: it will create multiple replicas of same pod
+if we delete one pod it will create another
+by using labels we can identify all the replicas of pods.
+selector will select all the pods with same replicas.
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  labels:
+    app: swiggy
+  name: swiggy-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: swiggy
+  template:
+    metadata:
+      labels:
+        app: swiggy
+    spec:
+      containers:
+      - name: cont1
+        image: rahamshaik/moviesrepopaytm:v2
+
+kubectl apply -f filename.yml
+
+kubectl get rs
+kubectl get rs -o wide
+kubectl describe rs swiggy-rs
+
+kubectl get po
+kubectl get po -o wide
+kubectl describe pod podname
+kubectl get po --show-labels
+kubectl delete po -l app=swiggy
+
+DRAWBACK:
+If we update the image replicaset will wont work here.
+
+DEPLOYMENT:
+It is more advance than RS.
+we use this on real deployment.
+
+deployment -- > replicaset -- > pods
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: swiggy
+  name: swiggy-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: swiggy
+  template:
+    metadata:
+      labels:
+        app: swiggy
+    spec:
+      containers:
+      - name: cont1
+        image: nginx
+
+kubectl apply -f filename.yml
+
+kubectl get deploy
+kubectl get deploy -o wide
+kubectl describe deploy swiggy-deploy
+kubectl delete deploy swiggy-deploy
+
+kubectl get po
+kubectl get po -o wide
+kubectl describe pod podname
+kubectl get po --show-labels
+kubectl delete po -l app=swiggy
+
+------------------------------------------------------------------------------------------------
+
+MINIKUBE  ----------->   Minikube is a tool for running a single-node Kubernetes cluster locally on your development machine. It's designed to make it easy for developers to set up and experiment with Kubernetes without the need for a full-scale cluster or cloud-based Kubernetes service. Minikube provides a lightweight and isolated Kubernetes environment that is ideal for learning, testing, and development purposes.
+
+------------------------------------------------------------------------------------------------
+
+NAMESPACE  -------->   In Kubernetes, a Namespace is a logical and virtual cluster that allows you to partition and isolate resources within a Kubernetes cluster. It's a way to create multiple virtual clusters within a single physical Kubernetes cluster. Namespaces are often used to organize and separate different projects, teams, or applications running in the same Kubernetes cluster, providing a level of resource isolation and management.
+
+
+1.Isolation
+2.Organizational Structure
+3.Access Control
+4.Networking Isolation
+5.Ingress Controllers
+
+
+----------------------------------------------------------------------------------------------
+
+DAEMON-SET  ----------->   A DaemonSet is a Kubernetes resource that ensures that a copy of a specific pod is running on all (or a subset of) nodes in a cluster. Unlike ReplicaSets, which aim to maintain a specified number of replicas, DaemonSets aim to run exactly one instance of a pod on each node in the cluster. They are used for tasks that should run on all nodes, such as log collection, monitoring agents, or network plugins.
+
+----------------------------------------------------------------------------------------------
+
+NAMESPACE: It is used to divide the cluster to multiple teams.
+dev team= dev namespace 
+test team= test namespace
+it is used to isloate the resources.
+
+default: if we create any resource it will go under default namespace
+kube-node-lease: if we take an object from another node it will store on this ns.
+kube-public: it will make the resource available for all users.
+kube-system: k8s will create its own resources for itself on this ns.
+
+kubectl get po -n default
+kubectl get po -n kube-node-lease
+kubectl get po -n kube-public
+kubectl get po -n kube-system
+
+
+
+kubectl config set-context --current --namespace=dev
+kubectl config view --minify
+kubectl config view --minify | grep -i namespace
+
+
+DAEMOSET: It will create one pod on all each node of the cluster.
+mainly we use if to create fluentd and elasticsearch pods to fetch logs.
+
+
+KUBECOLOR: To apply colors for the k8s
+
+wget https://github.com/hidetatz/kubecolor/releases/download/v0.0.25/kubecolor_0.0.25_Linux_x86_64.tar.gz
+tar -zxvf kubecolor_0.0.25_Linux_x86_64.tar.gz
+./kubecolor
+chmod +x kubecolor
+mv kubecolor /usr/local/bin/
+kubecolor get po
+kubecolor get po -n kube-system
+
+
+---------------------------------------------------------------------------------------------------
+
+SERVICES  ------------>   Kubernetes services define a stable network endpoint (IP and port) for accessing a set of pods. Services allow for load balancing, service discovery, and routing network traffic to the appropriate pods.
+
+   73  source .bashrc
+   74  kubecolor get po -n kube-system
+   75   wget https://github.com/hidetatz/kubecolor/releases/download/v0.0.25/kubecolor_0.0.25_Linux_x86_64.t                                                                                                                                                                                                       ar.gz
+   76  ll
+   77  tar -zxvf kubecolor_0.0.25_Linux_x86_64.tar.gz
+   78  ll
+   79  ./kubecolor
+   80  kubecolor
+   81  chmod +x kubecolor
+   82  mv kubecolor /usr/local/bin/
+   83  ls /usr/local/bin/kubecolor
+   84  kubecolor get po
+   85  kubecolor get po -n kube-system
+   86  histroy
+
+==================================================
+DAY-05: 26-07-2023: SVC (CIP, NP, LB)
+
+SERVICE: it is used to expose an application.
+
+TYPES:
+1. CLUSTERIP: It will work inside the cluster.
+it will not expose to outer world.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: swiggy
+  name: swiggy-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: swiggy
+  template:
+    metadata:
+      labels:
+        app: swiggy
+    spec:
+      containers:
+      - name: cont1
+        image: rahamshaik/trainservice:latest
+        ports:
+          - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sv1
+spec:
+  type: ClusterIP
+  selector:
+    app: swiggy
+  ports:
+    - port: 80
+
+DRAWBACK:
+We cannot use app outside.
+
+2. NODEPORT: It will expose our application in a particular port.
+Range: 30000 - 32767 (in sg we need to give all traffic)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: swiggy
+  name: swiggy-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: swiggy
+  template:
+    metadata:
+      labels:
+        app: swiggy
+    spec:
+      containers:
+      - name: cont1
+        image: rahamshaik/trainservice:latest
+        ports:
+          - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: abc
+spec:
+  type: NodePort
+  selector:
+    app: swiggy
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 31111
+
+DRAWBACK:
+PORT RESTRICTION.
+
+3. LOADBALACER: It will expose our app and distribute load blw pods.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: swiggy
+  name: swiggy-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: swiggy
+  template:
+    metadata:
+      labels:
+        app: swiggy
+    spec:
+      containers:
+      - name: cont1
+        image: rahamshaik/trainservice:latest
+        ports:
+          - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: abc
+spec:
+  type: LoadBalancer
+  selector:
+    app: swiggy
+  ports:
+    - port: 80
+      targetPort: 80
+
+
+---------------------------------------------------------------------------------------------
+
+KOPS   -------------->     Kops, short for "Kubernetes Operations," is an open-source tool for automating the provisioning, deployment, and management of Kubernetes clusters on cloud infrastructure. It is designed to simplify the process of setting up and managing production-grade Kubernetes clusters on platforms like Amazon Web Services (AWS), Google Cloud Platform (GCP), Microsoft Azure, and others.
+
+Key features and use cases of Kops include:
+
+1.Cluster Provisioning: Kops can create and provision Kubernetes clusters on various cloud providers and virtualization platforms. It automates the setup of the control plane (master nodes) and worker nodes, ensuring that the cluster is properly configured for production use.
+
+2.Infrastructure as Code (IaC): Kops uses a declarative configuration format (usually written in YAML) to define the desired state of the Kubernetes cluster. This configuration can be versioned and treated as code, making it easier to manage and reproduce clusters.
+
+3.High Availability: Kops supports highly available Kubernetes clusters by deploying multiple control plane nodes in different availability zones. This enhances cluster resilience and fault tolerance.
+
+4.Cluster Upgrades: Kops provides tools for upgrading Kubernetes clusters to newer versions, including both minor and major version upgrades. It handles the complexities of upgrading the control plane and node components.
+
+5.Customization: Kops allows you to customize various aspects of your Kubernetes cluster, including network settings, node instance types, storage configurations, and add-ons.
+
+6.Integration with Cloud Providers: Kops integrates with cloud provider services to provision resources such as virtual machines (EC2 instances on AWS) and network components. It also supports features like automatic scaling groups.
+
+7.Validation and Testing: Kops includes validation and testing features to ensure that the cluster configuration is correct and that the cluster is healthy. It can help detect and troubleshoot configuration issues.
+
+8.DNS and Networking: Kops provides options for configuring DNS and networking settings, including support for integrating with cloud-specific DNS services.
+
+9.Multi-Cluster Management: Kops can manage multiple Kubernetes clusters across different cloud providers or regions from a single control plane.
+
+----------> Kops is especially valuable for DevOps teams and administrators who need to deploy and manage Kubernetes clusters on cloud infrastructure. It abstracts away much of the complexity involved in setting up a production-ready Kubernetes environment, enabling users to focus on application deployment and management within the cluster.
