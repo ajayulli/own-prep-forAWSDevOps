@@ -1,0 +1,873 @@
+TERRAFORM  ------>   Terraform is an open-source infrastructure as code (IaC) tool developed by HashiCorp. It allows users to define and provision infrastructure resources in a declarative and version-controlled way. Terraform is designed to automate the provisioning and management of infrastructure across various cloud providers, on-premises data centers, and other service providers.
+
+
+1.Infrastructure as Code (IaC): Terraform uses a domain-specific language (DSL) to define infrastructure resources and their configurations. This code, written in HashiCorp Configuration Language (HCL), describes the desired state of the infrastructure.
+
+2.Declarative Syntax: Terraform uses a declarative approach, where you specify what resources you want, and Terraform figures out how to create and manage them.
+
+3.Provider Agnostic: Terraform supports various infrastructure providers, including major cloud providers like AWS, Azure, Google Cloud, as well as on-premises solutions such as VMware and OpenStack. Each provider is implemented as a plugin.
+
+4.State Management: Terraform maintains a state file that records the current state of the provisioned infrastructure. This state file is used to plan and apply changes, allowing Terraform to know what needs to be created, updated, or destroyed to match the desired state.
+
+5.Version Control: Terraform configurations can be version-controlled using Git or other version control systems. This allows you to track changes, collaborate with team members, and roll back to previous configurations if needed.
+
+6.Execution Plan: Terraform generates an execution plan that shows what actions it will take to bring the current infrastructure state in line with the desired state. This plan is displayed before any changes are applied, allowing for review and validation.
+
+7.Modularity and Reusability: Terraform configurations can be organized into modules, which are reusable building blocks for defining infrastructure components. Modules can be shared across projects and teams.
+
+8.Community and Ecosystem: Terraform has a large and active community, and there is a vast ecosystem of community-contributed modules and providers that extend its functionality.
+
+--------------------------------------------------------------------------------------------------
+
+
+ADVANTAGES  ------>   
+
+1.Declarative Configuration
+2.Multi-Cloud and Multi-Provider Support
+3.Version Control
+4.State Management
+5.Resource Dependencies
+6.Modularity and Reusability
+7.Scalability
+8.Integration with Other Tools
+
+---------------------------------------------------------------------------------------------
+
+INFRA: RESOURCE USED TO RUN OUR APPLICATION.
+EX: SERVERS, ASG, ELB, VPC ----
+
+1. ON-PREM: IT WAS MANAGED BY OUR IT TEAM.
+2. CLOUD: CLOUD PROVIDERS (AWS, AZURE,GCP)
+
+INFRA IN CLOUD IS CREATED MANUALLY TILL NOW:
+LIMITATIONS:
+1. MISTAKES WILL HAPPEN.
+2. TAKES TIME.
+3. INFRA CREATION LATE.
+
+AUTOMATION:
+DEVOPS: TERRAFORM, PULUMI, CHEF, ANSIBLE ----
+CLOUD:
+AWS - CFT
+AZURE - ARM
+GCP - GDE
+
+HISTORY:
+
+MITCHEL HASIMOTO -- > 2011 : TUMBLR -- > NO RESPONSE
+YEAR: 2014
+LANGUAGE: GO LANG
+COMPANY: HASHICORP
+TYPE: FREE AND OPENSOURCE
+SPECIFICATION: INFRA CREATION
+WHO IT WORKS: CODE -- > HCL (HASHICORP CONFIGURATION LANGUAGE)
+
+ADVANTAGES:
+1. AUTOMATION
+2. TIME SAVING
+3. REUSEABLE 
+4. DRY RUN 
+5. CLOUD AGONISTIC
+
+installation:
+sudo yum install -y yum-utils shadow-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo yum -y install terraform
+
+PERMISSION:
+attach iam user creds to ec2
+
+CONFIGURATION FILE: It has information about our resource.
+EX: .tf, .tfvars 
+
+cat main.tf
+
+provider "aws" {
+region = "eu-west-1"
+}
+
+resource "aws_instance" "one" {
+count = 3
+ami = "ami-06935448000742e6b"
+instance_type = "t2.micro"
+}
+
+LIFECYCLE:
+terrafrom init: it will download provider plugins.
+terraform plan: it will create execution plan for resource.
+terraform apply: it will create the resource.
+terraform destroy: it will destroy the resource.
+
+STATE FILE: It will store the resource infromation which created by terraform.
+terrafrom state list: it will list resources inside the state file
+
+TARGET: It will destroy a particular resource in terraform
+terraform destroy -target="aws_instance.one[1]"
+
+---------------------------------------------------------------------------------------------
+OUTPUT  ---------> In Terraform, "outputs" refer to the values or information that you want to extract from your infrastructure configuration after it has been applied. Outputs allow you to expose specific data or resources as variables that can be easily accessed, displayed, or used by other parts of your infrastructure, other Terraform configurations, or external systems.
+
+1.Defining Outputs:
+output "instance_public_ip" {
+  value = aws_instance.example.public_ip
+}
+
+
+2.Displaying Outputs:
+terraform output instance_public_ip
+
+3.Using Outputs:
+Outputs can be used within your Terraform configuration to set variables or parameters for other resources. You can reference them like variables. For instance:
+resource "aws_security_group_rule" "ssh_ingress" {
+  type        = "ingress"
+  from_port   = 22
+  to_port     = 22
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.example.id
+}
+
+output "ssh_rule_id" {
+  value = aws_security_group_rule.ssh_ingress.id
+}
+
+
+-------------------------------------------------------------------------------------------------
+
+TAINT,UNTAINT & REFRESH   --------------------->    
+
+------------->     1.terraform refresh:
+
+The terraform refresh command is used to reconcile the Terraform state with the actual infrastructure. It queries the real-world resources and updates the state file with their current status and attributes.
+This command can be useful when you suspect that the state file is out of sync with the actual infrastructure. Running terraform refresh ensures that Terraform has accurate information about the current state.
+Example usage:
+
+terraform refresh
+
+------------->     2.terraform taint:
+
+The terraform taint command is used to mark a resource as "tainted." A tainted resource is one that Terraform will consider for recreation during the next terraform apply. Tainting a resource tells Terraform to consider it as if it needs to be replaced, even if no other changes to the configuration are made.
+This can be useful when you want to force the recreation of a specific resource, for example, to apply changes to its configuration.
+Example usage:
+
+terraform taint aws_instance.example
+
+------------->     3.terraform untaint:
+
+The terraform untaint command is used to remove the "tainted" mark from a resource. After untainting a resource, it will not be automatically recreated during the next terraform apply, unless other changes in the configuration require it.
+This command is helpful when you no longer want to consider a resource for recreation, or if you've addressed the issues that led to tainting it in the first place.
+Example usage:
+
+terraform untaint aws_instance.example
+
+
+--------------------------------------------------------------------------------------------------
+
+ALLIASES & PROVIDERS  ----------------->    In Terraform, "aliases" and "providers" are two concepts that are used to work with multiple instances of the same provider or to create provider configurations with different settings. They are particularly useful when you need to interact with multiple environments or regions within a cloud provider, or when you want to use different authentication credentials for the same provider.
+
+
+1.Provider Aliases:
+
+Provider aliases allow you to create multiple instances of the same provider with different configurations. Each provider alias has a unique name and can be used to manage resources in different regions, availability zones, or environments within a cloud provider.
+
+Here's an example of how to define a provider alias in Terraform:
+provider "aws" {
+  alias  = "us-west-1"
+  region = "us-west-1"
+}
+
+provider "aws" {
+  alias  = "us-east-1"
+  region = "us-east-1"
+}
+
+In this example, two AWS provider aliases, "us-west-1" and "us-east-1," are defined with different region configurations. You can then use these aliases to create and manage resources in their respective regions.
+
+To reference resources within a specific provider alias, you can use the alias name, like this:
+resource "aws_instance" "example" {
+  provider = aws.us-west-1
+  # ...
+}
+
+
+2.Provider Blocks:
+
+Provider blocks define configurations for different providers in your Terraform configuration. Each provider block corresponds to a separate instance of a provider, and you can configure different settings, such as authentication, for each one.
+
+Here's an example of how to define provider blocks in Terraform:
+provider "aws" {
+  region = "us-west-1"
+  access_key = "your_access_key"
+  secret_key = "your_secret_key"
+}
+
+provider "aws" {
+  alias = "east"
+  region = "us-east-1"
+}
+
+
+In this example, two AWS provider blocks are defined. The first one specifies the region and authentication credentials, while the second one is given an alias "east" with a different region.
+
+You can specify which provider block to use for a resource by using the provider argument:
+resource "aws_instance" "example" {
+  provider = aws.east
+  # ...
+}
+
+
+-------------------------------------------------------------------------------------------------
+
+
+UTPUTS: It will print the resource outputs 
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-0b915513496b814ce"
+instance_type = "t2.micro"
+tags = {
+Name = "raham-terra-server"
+}
+}
+
+output "raham" {
+value = [aws_instance.one.public_ip, aws_instance.one.private_ip, aws_instance.one.public_dns]
+}
+
+
+TERRAFORM REFRESH: it will refresh the state file and shows the objects existence.
+TERRAFORM TAINT: it will recreate specific resource.
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-0b915513496b814ce"
+instance_type = "t2.micro"
+tags = {
+Name = "raham-terra-server"
+}
+}
+
+resource "aws_s3_bucket" "two" {
+bucket = "rahamterra443357-swiggy"
+}
+
+terraform taint aws_instance.one 
+terraform apply --auto-approve
+
+
+UNTAINT: To undo the tainting.
+terraform untaint aws_s3_bucket.two
+
+
+ALIAS & PROVIDERS:
+it is used to create multiple resource on multiple regions at a time.
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+
+resource "aws_instance" "one" {
+ami = "ami-0b915513496b814ce"
+instance_type = "t2.micro"
+tags = {
+Name = "raham-terra-server"
+}
+}
+
+provider "aws" {
+region = "eu-west-2"
+alias = "london"
+}
+
+resource "aws_instance" "two" {
+provider = aws.london
+ami = "ami-0b594cc165f9cddaa"
+instance_type = "t2.micro"
+tags = {
+Name = "raham-terra-server"
+}
+}
+
+
+-----------------------------------------------------------------------------------------------
+
+
+TERRAFORM VALIDATE: It will validte the terraform files. (syntax check)
+
+LOCALS: we use this block to define the values for resources.
+we can define value once and use this multiple times.
+Adv: we can modify the value once and rest will change automatically.
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+locals {
+Name = "devserver"
+}
+
+resource "aws_instance" "one" {
+ami = "ami-0b915513496b814ce"
+instance_type = "t2.micro"
+tags = {
+Name = "${local.Name}"
+}
+}
+
+
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+locals {
+Name = "test"
+}
+
+resource "aws_vpc" "one" {
+cidr_block = "10.0.0.0/16"
+tags = {
+Name = "${local.Name}-vpc"
+}
+}
+
+resource "aws_subnet" "two" {
+vpc_id = aws_vpc.one.id
+cidr_block = "10.0.0.0/24"
+tags = {
+Name = "${local.Name}-subnet"
+}
+}
+
+resource "aws_instance" "three" {
+subnet_id = aws_subnet.two.id
+ami = "ami-0b915513496b814ce"
+instance_type = "t2.micro"
+tags = {
+Name = "${local.Name}-instance"
+}
+}
+
+
+TERRAFORM GRAPH: It will show the blueprint(flow chart) of terraform resource creation.
+linK: graphwiz online
+copy past the content on this site.
+
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table.html
+
+
+WORKSPACE: it is used to isloate the environments.
+each action we apply on one workspace will not effect another workspace.
+in real time we use the workspace to create dev, test --- envs
+Note: 
+1. To delete workspace it should be empty.
+2. We cant delete current workspace.
+2. we cant Default workspace (it will not create any resource)
+
+
+terraform workspace list	: lists the workspaces
+terraform workspace new dev	: creates workspace
+terraform workspace show	: shows the current workspace
+terraform workspace select dev	: switch to dev workspace
+terraform workspace delete dev	: to delete dev workspace
+
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+locals {
+Name = "${terraform.workspace}"
+}
+
+resource "aws_instance" "three" {
+ami = "ami-0b915513496b814ce"
+availability_zone = "eu-west-3b"
+key_name = "terraform"
+instance_type = "t2.medium"
+tags = {
+Name = "${local.Name}-instance"
+}
+}
+
+-------------------------------------------------------------------------------------------------
+
+
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
+
+
+
+
+provider "aws" {
+}
+
+locals {
+  ingress_rules = [{
+    port        = 443
+    },
+    {
+      port        = 80
+  },
+  {
+      port        = 8080
+  }]
+}
+
+resource "aws_instance" "ec2_example" {
+  ami                    = "ami-0c02fb55956c7d316"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [aws_security_group.main.id]
+  tags = {
+    Name = "Terraform EC2"
+  }
+}
+
+resource "aws_security_group" "main" {
+
+  egress = [
+    {
+      cidr_blocks      = ["0.0.0.0/0"]
+      description      = "*"
+      from_port        = 0
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "-1"
+      security_groups  = []
+      self             = false
+      to_port          = 0
+  }]
+
+  dynamic "ingress" {
+    for_each = local.ingress_rules
+
+    content {
+      description = "*"
+      from_port   = ingress.value.port
+      to_port     = ingress.value.port
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
+  tags = {
+    Name = "terra sg"
+  }
+}
+
+
+
+BACKEND S3:
+
+
+provider "aws" {
+}
+
+terraform {
+  backend "s3" {
+    bucket = "mybucket"
+    key    = "prod"
+    region = "eu-west-3"
+  }
+}
+
+
+resource "aws_instance" "one" {
+  for_each = toset(["one", "two", "three"])
+  ami           = "ami-06f7633a6b8e0fb0a"
+  instance_type = "t2.micro"
+  tags = {
+    Name = "instance-${each.key}"
+  }
+}
+
+
+LOOPS:
+
+provider "aws" {
+}
+
+
+resource "aws_instance" "one" {
+  for_each = toset(["one", "two", "three"])
+  ami           = "ami-06f7633a6b8e0fb0a"
+  instance_type = "t2.micro"
+  tags = {
+    Name = "instance-${each.key}"
+  }
+}
+
+------------------------------------------------------------------------------------------------
+
+
+TERRAFORM IMPORT: Used to import the resource config which is created manually.
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "aws_instance" "abc" {
+
+}
+
+terraform import aws_instance.abc (instance-id)
+
+
+LOCAL RESOURCES:
+If we want to create local resources we need to use local provider plugins.
+so use terraform init 
+
+provider "aws" {
+region = "eu-west-3"
+}
+
+resource "local_file" "one" {
+filename = "abc.txt"
+content = "hai all this is my file created by terrafom"
+}
+
+
+VERSION CONSTRAINTS:
+aws provoider, gcp provider, azure provider, local provider
+if we want to chnage the version of provider so we use this concept.
+
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = ">5.9.0, <5.11.0"
+    }
+  }
+}
+
+
+terraform {
+  required_providers {
+    local = {
+      source = "hashicorp/local"
+      version = "2.4.0"
+    }
+  }
+}
+
+MODULES: It will divide the code into multiple files and folders seperately.
+if you want ec2 code you need to go ec2 folder
+if you want s3 code you need to go s3 folder
+
+
+cat main.tf
+module "my_instance_module" {
+        source = "./modules/instances"
+        ami = "ami-0b915513496b814ce"
+        instance_type = "t2.micro"
+        instance_name = " rahaminstance"
+}
+
+module "s3_module" {
+source = "./modules/buckets"
+bucket_name = "devopsherahamshaik009988"
+}
+
+cat provider.tf
+provider "aws" {
+}
+
+cat modules/instances/main.tf
+resource "aws_instance" "my_instance" {
+        ami = var.ami
+        instance_type = var.instance_type
+        tags = {
+                Name = var.instance_name
+        }
+}
+
+cat modules/instances/variable.tf
+variable "ami" {
+  type          = string
+}
+
+variable "instance_type" {
+  type          = string
+}
+
+variable "instance_name" {
+  description   = "Value of the Name tag for the EC2 instance"
+  type          = string
+}
+
+cat modules/buckets/main.tf
+
+resource "aws_s3_bucket" "b" {
+bucket = var.bucket_name
+}
+
+
+cat modules/buckets/variable.tf
+
+variable "bucket_name" {
+type = string
+}
+
+-----------------------------------------------------------------------------------------
+
+
+VALIDATE   ------------->   In Terraform, the terraform validate command is used to check the syntax and structure of your Terraform configuration files (usually written in HashiCorp Configuration Language, or HCL) for errors without actually creating or modifying any resources in your infrastructure.
+
+-----------------------------------------------------------------------------------------------
+
+
+GRAPH    ---------------->   In Terraform, the terraform graph command is used to generate a visual representation of the resource dependency graph defined in your Terraform configuration. The generated graph provides a visual overview of how resources depend on each other and can help you understand the order in which Terraform will create, update, or destroy resources during an apply operation.
+
+
+------------------------------------------------------------------------------------------------
+
+
+WORKSPACE  -------------->   In Terraform, a "workspace" is a concept used to manage multiple instances of the same infrastructure configuration within a single root module. Workspaces allow you to maintain separate, isolated environments for your infrastructure, such as development, staging, and production, all using the same Terraform configuration files.
+
+Isolation
+Workspace Names
+Switching Workspaces
+          terraform workspace select development
+Listing Workspaces
+          terraform workspace list
+Creating Workspaces
+          terraform workspace new staging
+Deleting Workspaces
+          terraform workspace delete staging
+
+
+######################    Here's a simple example of how workspaces can be used   ################
+
+# Create a new workspace for the development environment
+terraform workspace new development
+
+# Select the development workspace
+terraform workspace select development
+
+# Apply the configuration for the development environment
+terraform apply
+
+# Switch to the production workspace
+terraform workspace select production
+
+# Apply the configuration for the production environment
+terraform apply
+
+
+-----------------------------------------------------------------------------------------------
+
+DYNAMIC BLOCKS   ------------->    In Terraform, a "dynamic block" is a construct that allows you to generate and manage multiple blocks of similar content dynamically within a resource or module configuration block. This feature is particularly useful when you need to create multiple instances of a similar configuration block, such as multiple security group rules, IAM policies, or AWS tags.
+
+
+############   Here's the basic syntax of a dynamic block     ################
+
+dynamic "BLOCK_NAME" {
+  for_each = COLLECTION_EXPRESSION
+  content {
+    # Configuration block content
+    # ...
+  }
+}
+
+
+---->  BLOCK_NAME is the name of the dynamic block.
+----->  COLLECTION_EXPRESSION is an expression that evaluates to a collection (list or map) over which you want to iterate.
+
+
+Let's look at some examples:
+
+Example 1: Creating Multiple AWS Security Group Rules
+
+resource "aws_security_group" "example" {
+  name        = "example"
+  description = "Example security group"
+
+  dynamic "ingress" {
+    for_each = var.security_group_ingress_rules
+    content {
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
+  }
+}
+
+
+Example 2: Dynamic AWS Tags
+
+resource "aws_instance" "example" {
+  ami           = "ami-12345678"
+  instance_type = "t2.micro"
+
+  dynamic "tag" {
+    for_each = var.instance_tags
+    content {
+      key   = tag.key
+      value = tag.value
+    }
+  }
+}
+
+
+-----------------------------------------------------------------------------------------------
+
+LOOPS   ---------------->   In Terraform, there is no built-in looping construct like you would find in traditional programming languages. Terraform's declarative nature means you define the desired state of your infrastructure, and Terraform itself manages the looping and iteration to achieve that state. However, there are several ways to achieve loop-like behavior in Terraform using constructs like count, for_each, and the dynamic block.
+
+
+1.Count: The count argument can be used with a resource block to create multiple instances of that resource based on a fixed number. 
+
+For example:
+
+resource "aws_instance" "example" {
+  ami           = "ami-12345678"
+  instance_type = "t2.micro"
+  count         = 5
+}
+
+In this example, Terraform creates five AWS EC2 instances.
+
+2.For_Each: The for_each argument allows you to create multiple instances of a resource based on a map or set.
+
+For example:
+
+variable "instance_config" {
+  type = map(object({
+    ami           = string
+    instance_type = string
+  }))
+}
+
+resource "aws_instance" "example" {
+  for_each = var.instance_config
+
+  ami           = each.value.ami
+  instance_type = each.value.instance_type
+}
+
+
+In this example, Terraform creates multiple EC2 instances based on the instance_config variable, which is a map of configuration objects.
+
+3.Dynamic Blocks: The dynamic block is used to generate multiple instances of a block dynamically based on a collection like a list or map. This is similar to for_each but provides more flexibility.
+
+For example:
+
+variable "security_group_rules" {
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+resource "aws_security_group" "example" {
+  name        = "example"
+  description = "Example security group"
+
+  dynamic "ingress" {
+    for_each = var.security_group_rules
+    content {
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
+  }
+}
+
+
+-----------------------------------------------------------------------------------------------
+
+IMPORT  ---------------->   The terraform import command is used to import existing resources into Terraform's state. This command is particularly useful when you have infrastructure resources that were created outside of Terraform, and you want to start managing them with Terraform.
+
+
+----------------------------------------------------------------------------------------------
+
+
+LOCAL RESOURCE    ----------->   In Terraform, there isn't a concept of "local resources" in the same way there are resources that interact with cloud providers or external systems. Instead, Terraform focuses on managing infrastructure resources and configurations in the target environment. However, you can create your own custom resources using Terraform to manage local operations or perform actions that aren't related to external infrastructure.
+
+
+resource "null_resource" "local_example" {
+  triggers = {
+    # Define triggers that determine when to run this resource
+    always_run = "${timestamp()}"
+  }
+
+  # This is the provisioner block where you can run local commands or scripts
+  provisioner "local-exec" {
+    command = "echo 'This is a local resource'"
+  }
+}
+
+
+
+
+terraform {
+  required_providers {
+    null = {
+      source = "hashicorp/null"
+      version = "3.1.0"
+    }
+  }
+}
+
+resource "null_resource" "local_example" {
+  # ...
+}
+
+# Other resources and configurations...
+
+
+
+-------------------------------------------------------------------------------------------------
+
+
+VERSION CONSTRAINTS   --------------->     n Terraform, version constraints are used to specify which versions of provider plugins, modules, and even Terraform itself should be used when working on a particular configuration. Version constraints help ensure that your infrastructure code remains compatible with specific versions of external dependencies and tools.
+
+1.Provider Plugins: In your Terraform configuration, you can specify version constraints for provider plugins. This ensures that Terraform uses a compatible version of the provider when creating or managing resources in your infrastructure.
+
+provider "aws" {
+  region  = "us-west-2"
+  version = "~> 3.0"  # Use version 3.0 or later but less than 4.0
+}
+
+
+
+
+2.Module Sources: When referencing modules in your configuration, you can specify version constraints to ensure that a particular version of the module is used.
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "2.0.0"
+}
+
+
+
+3.Terraform Core: In your versions.tf file, you can specify a required Terraform version using the required_version attribute. This ensures that your configuration is compatible with a specific Terraform version:
+
+terraform {
+  required_version = ">= 0.14, < 0.15"  # Use Terraform 0.14.x
+}
+
+
+
+4.Module Inputs: You can specify version constraints for module inputs if you want to ensure that a particular version of a module is used with specific inputs. This can be done using variables or direct input in the module block.
+
+------------>     Version constraints typically use semantic versioning (SemVer) syntax, which includes operators like =, >, <, >=, <=, and ~> (used for approximate version matching). For example, >= 2.0 means "greater than or equal to version 2.0," and ~> 3.0 means "compatible with version 3.0 or later but less than the next major version."
